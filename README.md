@@ -1,3 +1,5 @@
+![Build](https://github.com/UnauthorizedAccessBV/ESET-Protect-Docker-Server/actions/workflows/build.yml/badge.svg)
+
 # ESET PROTECT - Server
 
 This container provides the `Server` component of `ESET PROTECT`. See the [eset-protect-console](https://hub.docker.com/r/esetnederland/eset-protect-console) page for the web console component.
