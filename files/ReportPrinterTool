@@ -1,0 +1,9 @@
+#!/bin/sh
+
+# Workaround for ESMC path bug:
+#
+# "PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin;/opt/eset/RemoteAdministrator/Server//Qt"
+# ^; after /bin
+
+export PATH="$PATH:/bin:/opt/eset/RemoteAdministrator/Server/Qt"
+exec /usr/bin/xvfb-run /opt/eset/RemoteAdministrator/Server/ReportPrinterToolOrig "$@" > /dev/null
