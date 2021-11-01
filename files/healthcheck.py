@@ -13,16 +13,13 @@ import sys
 def main():
 
     """Check if ports 2222 and 2223 are reachable"""
-    ports = [
-        2222,
-        2223
-    ]
+    ports = [2222, 2223]
 
     for port in ports:
 
         with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as sock:
             try:
-                sock.connect(('127.0.0.1', port))
+                sock.connect(("127.0.0.1", port))
             except ConnectionRefusedError:
                 sys.exit(1)
 
