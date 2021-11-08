@@ -2,7 +2,7 @@
 FROM ubuntu:20.04
 
 # Versions
-ARG ESET_VERSION=9.0.2141.0
+ARG ESET_VERSION=9.0.2144.0
 ARG ODBC_VERSION=8.0.17
 
 # Set non-interactive (for apt etc.)
