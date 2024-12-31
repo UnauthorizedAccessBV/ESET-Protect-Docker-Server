@@ -4,7 +4,7 @@ FROM ubuntu:22.04 as odbc-build
 ENV LANG=C.UTF-8
 
 # ODBC Version
-ARG ODBC_VERSION=8.0.36
+ARG ODBC_VERSION=8.0.40
 
 # Set non-interactive (for apt etc.)
 ENV DEBIAN_FRONTEND noninteractive
@@ -33,7 +33,7 @@ FROM ubuntu:22.04
 ENV LANG=C.UTF-8
 
 # ESET versions
-ARG ESET_VERSION=11.0.199.0
+ARG ESET_VERSION=12.0.273.0
 
 # Set non-interactive (for apt etc.)
 ENV DEBIAN_FRONTEND noninteractive
@@ -94,7 +94,7 @@ RUN mkdir -p \
     && ln -s /logs /var/log/eset/RemoteAdministrator
 
 # Add installer
-ADD https://repository.eset.com/v1/com/eset/apps/business/era/server/linux/v11/${ESET_VERSION}/server_linux_x86_64.sh /install/server-linux-x86_64.sh
+ADD https://repository.eset.com/v1/com/eset/apps/business/era/server/linux/v12/${ESET_VERSION}/server_linux_x86_64.sh /install/server-linux-x86_64.sh
 RUN sed -i 's|config_ProgramConfigDir=.*|config_ProgramConfigDir=/config|g' /install/server-linux-x86_64.sh \
     && sed -i 's|^config_ProgramDataDir=.*|config_ProgramDataDir=/data|g' /install/server-linux-x86_64.sh \
     && sed -i 's|^config_ProgramLogsDir=.*|config_ProgramLogsDir=/logs|g' /install/server-linux-x86_64.sh \
