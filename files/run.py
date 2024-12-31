@@ -81,10 +81,7 @@ class CurrentInstall:
 
 def is_new_install(current_install):
     """Check to see if this is a new install or an upgrade"""
-    if current_install.config["ProductInstanceID"]:
-        return False
-
-    return True
+    return not current_install.config["ProductInstanceID"]
 
 
 def install_database():
@@ -255,10 +252,7 @@ def is_upgrade(current_install):
 
     value = check_version.strip().split("=")[1]
 
-    if value == "UPGRADE":
-        return True
-
-    return False
+    return value == "UPGRADE"
 
 
 def set_upgrade_in_installer():
