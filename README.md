@@ -58,6 +58,14 @@ services:
         environment:
             - DB_ADMIN_USERNAME=root
             - DB_ADMIN_PASSWORD=eraadmin
+            - HOSTNAME=esetprotect.yourdomainname.nl
+            - CERT_HOSTNAME=esetprotect.yourdomainname.nl
+            - CERT_AUTH_COMMON_NAME=ESET Protect Server Certification Authority
+            - CERT_COUNTRY=NL
+            - CERT_LOCALITY=Sliedrecht
+            - CERT_ORGANIZATION=ESET Nederland
+            - CERT_ORGANIZATIONAL_UNIT=IT
+            - CERT_STATE=ZH
         volumes:
             - eset-protect-server-config:/config
             - eset-protect-server-data:/data
