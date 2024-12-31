@@ -6,11 +6,11 @@ to use environment variables and docker secrets as arguments.
 It also tries to deal with new install vs. upgrade automatically."""
 
 import os
-import subprocess
-import time
-import socket
-import sys
 import signal
+import socket
+import subprocess
+import sys
+import time
 
 # Time to wait for db
 DB_WAIT_TIME = 300
@@ -21,7 +21,7 @@ SETTINGS = {
     "license-key": None,
     "server-port": None,
     "console-port": None,
-    "server-root-password": "eraadmin",
+    "server-root-password": "!eraadmin!",
     "db-type": "MySQL Server",
     "db-driver": "MySQL ODBC Unicode Driver",
     "db-hostname": "mysql",
@@ -30,7 +30,7 @@ SETTINGS = {
     "db-admin-username": None,
     "db-admin-password": None,
     "db-user-username": "era_db_user",
-    "db-user-password": "eraadmin",
+    "db-user-password": "!eraadmin!",
     "cert-hostname": "esmc.localhost",
     "skip-cert": None,
     "server-cert-path": None,
@@ -57,26 +57,22 @@ SETTINGS = {
 
 
 class CurrentInstall:
-
     """Simple class for storing and updating the config"""
 
     def __init__(self):
-
         """Build class from config file"""
         self.config = {}
         self.load_config()
         self.version = None
 
     def load_config(self):
-
         """Load config file"""
-        with open("/config/config.cfg", "r") as config_file:
+        with open("/config/config.cfg") as config_file:
             for line in config_file:
                 key, value = line.strip().split("=")
                 self.config.update({key: value})
 
     def write_config(self):
-
         """Write config file"""
         with open("/config/config.cfg", "w") as config_file:
             for key, value in self.config.items():
@@ -84,7 +80,6 @@ class CurrentInstall:
 
 
 def is_new_install(current_install):
-
     """Check to see if this is a new install or an upgrade"""
     if current_install.config["ProductInstanceID"]:
         return False
@@ -93,7 +88,6 @@ def is_new_install(current_install):
 
 
 def install_database():
-
     """Create the database"""
     command = [
         "/opt/eset/RemoteAdministrator/Server/setup/installer_backup.sh",
@@ -103,23 +97,21 @@ def install_database():
     ]
 
     for key, value in SETTINGS.items():
-
         if value in ("1", "true"):
-            command.append("--{0}".format(key))
+            command.append(f"--{key}")
 
         elif value in ("0", "false"):
             continue
 
         elif value:
-            command.extend(["--{0}".format(key), value])
+            command.extend([f"--{key}", value])
 
     subprocess.check_call(command)
 
 
 def write_guid():
-
     """Write the product GUID"""
-    with open("/config/config.cfg", "r") as config_cfg:
+    with open("/config/config.cfg") as config_cfg:
         config_file = {}
         for line in config_cfg:
             key, value = line.split("=")
@@ -133,7 +125,6 @@ def write_guid():
 
 
 def write_startup_configuration():
-
     """Create the startup configuration"""
     args = [
         "--db-type",
@@ -158,24 +149,19 @@ def write_startup_configuration():
 
 
 def set_variables():
-
     """Check environment variables and Docker secrets to change settings"""
     for key in SETTINGS:
-
         env_key = key.upper().replace("-", "_")
         if env_key in os.environ:
             SETTINGS[key] = os.environ[env_key]
 
     if os.path.exists("/run/secrets"):
-
         for key in SETTINGS:
-
-            if os.path.exists("run/secrets/{0}".format(key)):
-                SETTINGS[key] = open("/run/secrets/{0}".format(key)).read()
+            if os.path.exists(f"run/secrets/{key}"):
+                SETTINGS[key] = open(f"/run/secrets/{key}").read()
 
 
 def custom_action(action, args):
-
     """Call a custom action"""
     cmd = ["/opt/eset/RemoteAdministrator/Server/setup/CustomActions", "-a", action]
 
@@ -185,7 +171,6 @@ def custom_action(action, args):
 
 
 def set_guid():
-
     """Set the product GUID to a user-defined value"""
     if SETTINGS["product-guid"]:
         return
@@ -229,7 +214,6 @@ def set_guid():
 
 
 def wait_for_db():
-
     """Wait for database port to be available"""
     host = SETTINGS["db-hostname"]
     port = SETTINGS["db-port"]
@@ -251,7 +235,6 @@ def wait_for_db():
 
 
 def is_upgrade(current_install):
-
     """Check to see if we need to upgrade"""
     install = "/opt/eset/RemoteAdministrator/Server/setup/installer_backup.sh"
     with open(install, "rb") as installer:
@@ -279,7 +262,6 @@ def is_upgrade(current_install):
 
 
 def set_upgrade_in_installer():
-
     """Set "is_updating" to true to set installer to update mode"""
     command = [
         "/bin/sed",
@@ -292,7 +274,6 @@ def set_upgrade_in_installer():
 
 
 def upgrade(current_install):
-
     """Upgrade the installation"""
     args = [
         "--startup-config-path",
@@ -352,7 +333,6 @@ def upgrade(current_install):
 
 
 def bypass_root():
-
     """Trick for bypassing install script root check"""
     command = [
         "/bin/sed",
@@ -365,14 +345,12 @@ def bypass_root():
 
 
 def killer(signum, frame):
-
     """Handle SIGTERM for graceful shutdowns"""
     pid = int(subprocess.check_output(["pidof", "ERAServer"]))
     os.kill(pid, signum)
 
 
 def main():
-
     """Install ESMC database if needed and run it"""
     current_install = CurrentInstall()
     bypass_root()
