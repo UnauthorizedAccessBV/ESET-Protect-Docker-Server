@@ -1,0 +1,58 @@
+version: '3'
+
+services:
+    mysql:
+        image: mysql:8.0.17
+        command: |
+            --default-authentication-plugin=mysql_native_password
+            --innodb-log-file-size=100M
+            --innodb-log-files-in-group=2
+            --max-allowed-packet=30M
+            --bind-address=*
+            --log_bin_trust_function_creators=1
+        restart: unless-stopped
+        environment:
+            - MYSQL_ROOT_USER=root
+            - MYSQL_ROOT_PASSWORD=eraadmin
+        volumes:
+            - mysql:/var/lib/mysql
+
+    eset-protect-server:
+        image: esetnederland/eset-protect-server
+        depends_on:
+            - mysql
+        restart: unless-stopped
+        environment:
+            - DB_ADMIN_USERNAME=root
+            - DB_ADMIN_PASSWORD=eraadmin
+            - HOSTNAME=esetprotect.yourdomainname.nl
+            - CERT_HOSTNAME=esetprotect.yourdomainname.nl
+            - CERT_AUTH_COMMON_NAME=ESET Protect Server Certification Authority
+            - CERT_COUNTRY=NL
+            - CERT_LOCALITY=Sliedrecht
+            - CERT_ORGANIZATION=ESET Nederland
+            - CERT_ORGANIZATIONAL_UNIT=IT
+            - CERT_STATE=ZH
+        volumes:
+            - eset-protect-server-config:/config
+            - eset-protect-server-data:/data
+            - eset-protect-server-logs:/logs
+        ports:
+            - 2222:2222
+
+    eset-protect-console:
+        image: esetnederland/eset-protect-console
+        depends_on:
+            - eset-protect-server
+        restart: unless-stopped
+        volumes:
+            - eset-protect-console:/config
+        ports:
+            - 8080:8080
+
+volumes:
+    mysql:
+    eset-protect-server-config:
+    eset-protect-server-data:
+    eset-protect-server-logs:
+    eset-protect-console:
