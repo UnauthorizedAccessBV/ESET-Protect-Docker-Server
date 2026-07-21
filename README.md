@@ -31,11 +31,9 @@ docker run --rm --tty --interactive --publish 8080:8080 --link eset-protect-serv
 ### Option 2: docker-compose
 Copy the following content to a file called `docker-compose.yml`:
 ```yaml
-version: '3'
-
 services:
     mysql:
-        image: mysql:8.0.17
+        image: mysql:8.0.44
         command: |
             --default-authentication-plugin=mysql_native_password
             --innodb-log-file-size=100M
@@ -88,7 +86,7 @@ Then run:
 docker-compose up
 ```
 
-You should now be able to point your browser to `http://127.0.0.1:8080` and login with `Administrator / eraadmin`.
+You should now be able to point your browser to `http://127.0.0.1:8080` and login with `Administrator / !EsetProtectAdmin1`.
 
 ## Configuration
 The following environment variables can be used for configuration:
@@ -192,7 +190,7 @@ HOSTNAME=esetprotect.domain.nl
 ACME_EMAIL=user@domain.nl
 
 # Passwords
-SERVER_ROOT_PASSWORD=eraadmin
+SERVER_ROOT_PASSWORD=!EsetProtectAdmin1
 CERT_AUTH_PASSWORD=eraadmin
 
 # Certificate settings
